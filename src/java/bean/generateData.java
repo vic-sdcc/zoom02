@@ -80,9 +80,11 @@ public class generateData {
         }
 
         if (memberValue.getCompensation() != null) {
-            memberQuery += "and c.memNo IN (SELECT n.memNo.memNo FROM CoopEmplDtlMem n WHERE n.emplDtlNum.compBracket = '" + memberValue.getCompensation() + "')";
+            memberQuery += "and c.memNo IN (SELECT n.memNo.memNo FROM CoopEmplDtlMem n WHERE n.emplDtlNum.compBracket = '" + memberValue.getCompensation() + "') ";
         }
-
+        
+        memberQuery += "ORDER BY c.lastName, c.firstName, c.middleName";
+        
         //"SELECT c FROM CoopMember c WHERE FUNC('to_char', c.birthdate, 'YYYY') = '1994'"
         if (memberValue.getAgeFrom() != null) {
             return emf.createEntityManager().createQuery(memberQuery).setParameter("currentDate", getdFormat().parseStringDate(getdFormat().formatDate(getToday(), "yyyy-MM-dd"), "yyyy-MM-dd")).getResultList();
@@ -136,9 +138,11 @@ public class generateData {
         }
 
         if (memberValue.getCompensation() != null) {
-            memberQuery += "and c.memNo IN (SELECT n.memNo.memNo FROM CoopEmplDtlMem n WHERE n.emplDtlNum.compBracket = '" + memberValue.getCompensation() + "')";
+            memberQuery += "and c.associateNo IN (SELECT n.associateNo.associateNo FROM CoopEmplDtlAssoc n WHERE n.emplDtlNum.compBracket = '" + memberValue.getCompensation() + "')";
         }
 
+        memberQuery += "ORDER BY c.lastName, c.firstName, c.middleName";
+        
         //"SELECT c FROM CoopMember c WHERE FUNC('to_char', c.birthdate, 'YYYY') = '1994'"
         if (memberValue.getAgeFrom() != null) {
             return emf.createEntityManager().createQuery(memberQuery).setParameter("currentDate", getdFormat().parseStringDate(getdFormat().formatDate(getToday(), "yyyy-MM-dd"), "yyyy-MM-dd")).getResultList();

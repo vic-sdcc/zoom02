@@ -1,9 +1,9 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <portlet-app xmlns='http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd http://java.sun.com/xml/ns/portlet/portlet-app_2_0.xsd' version='2.0'>
     <portlet>
-        <description>zoom02</description>
-        <portlet-name>zoom02</portlet-name>
-        <display-name>zoom02</display-name>
+        <description>Member Filtering</description>
+        <portlet-name>Member Filtering</portlet-name>
+        <display-name>Member Filtering</display-name>
         <portlet-class>org.portletfaces.bridge.GenericFacesPortlet</portlet-class>
         <init-param>
             <name>javax.portlet.faces.defaultViewId.view</name>
@@ -28,9 +28,9 @@
             <portlet-mode>view</portlet-mode>
         </supports>
         <portlet-info>
-            <title>zoom02</title>
-            <short-title>zoom02</short-title>
-            <keywords>zoom02</keywords>
+            <title>Member Filtering</title>
+            <short-title>Member Filtering</short-title>
+            <keywords>Member Filtering</keywords>
         </portlet-info>
         <security-role-ref>
             <role-name>administrator</role-name>

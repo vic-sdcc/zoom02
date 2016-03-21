@@ -6,10 +6,13 @@
 package bean;
 
 import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
+import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.RequestScoped;
+import javax.faces.bean.SessionScoped;
+import javax.faces.context.FacesContext;
 import model.CoopAssociate;
 import model.CoopMember;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -21,8 +24,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
  * @author vic
  */
 @ManagedBean
-@RequestScoped
-public class exportData {
+@SessionScoped
+public class exportData implements Serializable {
 
     /**
      * Creates a new instance of exportData
@@ -30,9 +33,16 @@ public class exportData {
     public exportData() {
     }
 
-    public void memberList(List<CoopMember> memberData) {
+    private String filename;
+
+    public void memberList(List<CoopMember> memberData, String name) {
+        System.out.println("filename: " + name);
+        if (getFilename() == null || getFilename().length() == 0) {
+            setFilename("Filtered Data List(" + new Date() + ")");
+        }
+
         try {
-            String filename = "Member Data List(" + new Date() + ").xls";
+            setFilename("/home/vic/membership/" + getFilename() + ".xls");
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("FirstSheet");
 
@@ -42,28 +52,35 @@ public class exportData {
             rowhead.createCell(2).setCellValue("Name");
             rowhead.createCell(3).setCellValue("Email");
 
-            for (int i = 1; i != memberData.size(); i++) {
-                HSSFRow row = sheet.createRow((short) i);
+            for (int i = 0; i != memberData.size(); i++) {
+                HSSFRow row = sheet.createRow((short) i + 1);
                 row.createCell(0).setCellValue(memberData.get(i).getMemNo());
                 row.createCell(1).setCellValue(memberData.get(i).getScAcctno());
                 row.createCell(2).setCellValue(memberData.get(i).getLastName() + ", " + memberData.get(i).getFirstName() + " " + memberData.get(i).getMiddleName() + "." + " ");
                 row.createCell(3).setCellValue(memberData.get(i).getEmail());
             }
-            
-            FileOutputStream fileOut = new FileOutputStream(filename);
+
+            FileOutputStream fileOut = new FileOutputStream(getFilename());
             workbook.write(fileOut);
-            
-            
+
             fileOut.close();
             System.out.println("Your excel file has been generated!");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Your excel file has been generated.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         } catch (Exception ex) {
             System.out.println(ex);
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred while generating excel file.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         }
     }
-    
-    public void associateList(List<CoopAssociate> associateData) {
+
+    public void associateList(List<CoopAssociate> associateData, String name) {
+        System.out.println("filename: " + name);
+        if (getFilename() == null || getFilename().length() == 0) {
+            setFilename("Filtered Data List(" + new Date() + ")");
+        }
         try {
-            String filename = "Associate Data List(" + new Date() + ").xls";
+            setFilename("/home/vic/membership/" + getFilename() + ".xls");
             HSSFWorkbook workbook = new HSSFWorkbook();
             HSSFSheet sheet = workbook.createSheet("FirstSheet");
 
@@ -73,23 +90,34 @@ public class exportData {
             rowhead.createCell(2).setCellValue("Name");
             rowhead.createCell(3).setCellValue("Email");
 
-            for (int i = 1; i != associateData.size(); i++) {
-                HSSFRow row = sheet.createRow((short) i);
+            for (int i = 0; i != associateData.size(); i++) {
+                HSSFRow row = sheet.createRow((short) i + 1);
                 row.createCell(0).setCellValue(associateData.get(i).getAssociateNo());
                 row.createCell(1).setCellValue(associateData.get(i).getScAcctno());
                 row.createCell(2).setCellValue(associateData.get(i).getLastName() + ", " + associateData.get(i).getFirstName() + " " + associateData.get(i).getMiddleName() + "." + " ");
                 row.createCell(3).setCellValue(associateData.get(i).getEmail());
             }
-            
-            FileOutputStream fileOut = new FileOutputStream(filename);
+
+            FileOutputStream fileOut = new FileOutputStream(getFilename());
             workbook.write(fileOut);
-            
-            
+
             fileOut.close();
             System.out.println("Your excel file has been generated!");
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Successful", "Your excel file has been generated.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         } catch (Exception ex) {
             System.out.println(ex);
+            FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error", "An error occurred while generating excel file.");
+            FacesContext.getCurrentInstance().addMessage(null, message);
         }
+    }
+
+    public String getFilename() {
+        return filename;
+    }
+
+    public void setFilename(String filename) {
+        this.filename = filename;
     }
 
 }

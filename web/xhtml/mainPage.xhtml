@@ -7,15 +7,17 @@
       xmlns:p="http://primefaces.org/ui">
     <ui:composition template="/templates/layout.xhtml">
         <ui:define name="top">
-            #{bundle.Message}
+            <!-->{bundle.Message}<-->
         </ui:define>
         <ui:define id="mainContent" name="content">
             <f:event type="preRenderView" listener="#{memberFilterData.setPersonStat(true)}"/>
-            <!--p:growl id="message" showDetail="true" /-->
+            <p:growl id="message" showDetail="true" />
             <h:outputScript library="js" name="myJs.js" target="body"/>
             <h:form id="mainForm">
-
-
+                <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+                <p:dialog widgetVar="statusDialog" showHeader="false" modal="true" resizable="false">
+                    <p:graphicImage value="/resources/images/ajax_load.gif"/>
+                </p:dialog>
                 <h:panelGrid columns="2">
                     <p:outputLabel value="OU Code: "/>
                     <p:selectOneMenu value="#{memberFilterData.ouCodeID}" 
@@ -136,14 +138,14 @@
                                                        style="float:left;margin-right:10px">
                                             <f:setPropertyActionListener value="#{member}" 
                                                                          target="#{memberListModel.selectedMember}" />
-                                            <h:outputText value="#{member.scAcctno} - #{member.PPrefix} #{member.lastName}, #{member.firstName} #{member.middleName}. #{member.suffix}"/>
+                                            <h:outputText value="#{member.scAcctno} - #{member.PPrefix} #{member.lastName}, #{member.firstName} #{member.middleName} #{member.suffix}"/>
                                         </p:commandLink>
                                     </p:column>
                                     <p:column>
                                         <f:facet name="header">
                                             <h:outputText value="Regular members" />
                                         </f:facet>
-                                        <h:outputText value="#{member.memIdNo} - #{member.PPrefix} #{member.lastName}, #{member.firstName} #{member.middleName}. #{member.suffix}" 
+                                        <h:outputText value="#{member.memIdNo} - #{member.PPrefix} #{member.lastName}, #{member.firstName} #{member.middleName} #{member.suffix}" 
                                                       style="display:inline-block"/>
                                     </p:column>
                                 </p:dataTable>
@@ -157,12 +159,35 @@
                                                  styleClass="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-print">
                                     <p:printer target="memberList"/>
                                 </p:commandButton>
-                                <p:commandButton value="Export" actionListener="#{exportData.memberList(memberListModel.memberList)}"
+                                <p:commandButton value="Export"
                                                  icon="ui-icon-document"
-                                                 styleClass="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-document">
+                                                 styleClass="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-document"
+                                                 onclick="PF('exprtMemDlg').show();">
                                 </p:commandButton>
                             </span>
                         </p>
+
+                        <p:dialog header="Filename" widgetVar="exprtMemDlg" modal="true" 
+                                  height="90" resizable="false">
+                            <h:panelGrid columns="1">
+                                <p:inputText value="#{exportData.filename}" placeholder="#{'Filtered Member Data List'}" 
+                                             onclick="this.select()">
+                                    <p:ajax process="@this" event="blur"/>
+                                    <p:ajax process="@this" event="keyup"/>
+                                </p:inputText>
+                            </h:panelGrid>
+                            <br/>
+                            <h:panelGrid columns="2">
+                                <p:commandButton value="OK" process="@this" ajax="true"
+                                                 actionListener="#{exportData.memberList(memberListModel.memberList,exportData.filename)}"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" 
+                                                 oncomplete="PF('exprtMemDlg').hide();"
+                                                 update=":message"/>
+                                <p:commandButton value="Cancel" type="button" 
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" 
+                                                 onclick="PF('exprtMemDlg').hide();"/>
+                            </h:panelGrid>
+                        </p:dialog>
 
                         <p:dialog header="Basic Member Info" widgetVar="memberDialog" modal="true" 
                                   showEffect="fade" 
@@ -174,7 +199,7 @@
                                     <h:outputText value="#{memberListModel.selectedMember.scAcctno}" />
 
                                     <h:outputText value="Name" />
-                                    <h:outputText value="#{memberListModel.selectedMember.PPrefix} #{memberListModel.selectedMember.lastName}, #{memberListModel.selectedMember.firstName} #{memberListModel.selectedMember.middleName}. #{memberListModel.selectedMember.suffix}"/>
+                                    <h:outputText value="#{memberListModel.selectedMember.PPrefix} #{memberListModel.selectedMember.lastName}, #{memberListModel.selectedMember.firstName} #{memberListModel.selectedMember.middleName} #{memberListModel.selectedMember.suffix}"/>
 
                                     <h:outputText value="Birthdate:" />
                                     <h:outputText value="#{dateFormat.formatDate(memberListModel.selectedMember.birthdate, 'MMM dd yyyy')}" />
@@ -196,14 +221,14 @@
                                                        style="float:left;margin-right:10px">
                                             <f:setPropertyActionListener value="#{associate}" 
                                                                          target="#{associateListModel.selectedAssociate}" />
-                                            <h:outputText value="#{associate.scAcctno} - #{associate.PPrefix} #{associate.lastName}, #{associate.firstName} #{associate.middleName}. #{associate.suffix}"/>
+                                            <h:outputText value="#{associate.scAcctno} - #{associate.PPrefix} #{associate.lastName}, #{associate.firstName} #{associate.middleName} #{associate.suffix}"/>
                                         </p:commandLink>
                                     </p:column>
                                     <p:column>
                                         <f:facet name="header">
                                             <h:outputText value="Associate members" />
                                         </f:facet>
-                                        <h:outputText value="#{associate.memIdNo} - #{associate.PPrefix} #{associate.lastName}, #{associate.firstName} #{associate.middleName}. #{associate.suffix}" 
+                                        <h:outputText value="#{associate.memIdNo} - #{associate.PPrefix} #{associate.lastName}, #{associate.firstName} #{associate.middleName} #{associate.suffix}" 
                                                       style="display:inline-block"/>
                                     </p:column>
                                 </p:dataTable>
@@ -217,12 +242,34 @@
                                                  styleClass="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-print">
                                     <p:printer target="associateList"/>
                                 </p:commandButton>
-                                <p:commandButton value="Export" actionListener="#{exportData.associateList(associateListModel.associateList)}"
+                                <p:commandButton value="Export"
                                                  icon="ui-icon-document"
-                                                 styleClass="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-document">
+                                                 styleClass="ui-btn ui-shadow ui-corner-all ui-btn-icon-left ui-icon-document"
+                                                 onclick="PF('exprtAssDlg').show();">
                                 </p:commandButton>
                             </span>
                         </p>
+
+                        <p:dialog header="Filename" widgetVar="exprtAssDlg" modal="true" 
+                                  height="90" resizable="false">
+                            <h:panelGrid columns="1">
+                                <p:inputText value="#{exportData.filename}" placeholder="#{'Filtered Associate Data List'}"
+                                             onclick="this.select()">
+
+                                </p:inputText>
+                            </h:panelGrid>
+                            <br/>
+                            <h:panelGrid columns="2">
+                                <p:commandButton value="OK" process="@this" ajax="true"
+                                                 actionListener="#{exportData.associateList(associateListModel.associateList,exportData.filename)}"
+                                                 styleClass="ui-confirmdialog-yes" icon="ui-icon-check" 
+                                                 oncomplete="PF('exprtAssDlg').hide();"
+                                                 update=":message"/>
+                                <p:commandButton value="Cancel" type="button" 
+                                                 styleClass="ui-confirmdialog-no" icon="ui-icon-close" 
+                                                 onclick="PF('exprtAssDlg').hide();"/>
+                            </h:panelGrid>
+                        </p:dialog>
 
                         <p:dialog header="Basic Member Info" widgetVar="associateDialog" modal="true" 
                                   showEffect="fade" 

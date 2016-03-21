@@ -6,7 +6,6 @@
 package model;
 
 import java.io.Serializable;
-import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -14,15 +13,15 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -45,7 +44,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "CoopEmplDtl.findByEmplBarangay", query = "SELECT c FROM CoopEmplDtl c WHERE c.emplBarangay = :emplBarangay"),
     @NamedQuery(name = "CoopEmplDtl.findByEmplCityMun", query = "SELECT c FROM CoopEmplDtl c WHERE c.emplCityMun = :emplCityMun"),
     @NamedQuery(name = "CoopEmplDtl.findByEmplEmail", query = "SELECT c FROM CoopEmplDtl c WHERE c.emplEmail = :emplEmail"),
-    @NamedQuery(name = "CoopEmplDtl.findByEmplRankPos", query = "SELECT c FROM CoopEmplDtl c WHERE c.emplRankPos = :emplRankPos"),
     @NamedQuery(name = "CoopEmplDtl.findByAcctno", query = "SELECT c FROM CoopEmplDtl c WHERE c.acctno = :acctno"),
     @NamedQuery(name = "CoopEmplDtl.findByEDate", query = "SELECT c FROM CoopEmplDtl c WHERE c.eDate = :eDate"),
     @NamedQuery(name = "CoopEmplDtl.findByEmploymentEndDate", query = "SELECT c FROM CoopEmplDtl c WHERE c.employmentEndDate = :employmentEndDate")})
@@ -90,9 +88,6 @@ public class CoopEmplDtl implements Serializable {
     @Column(name = "empl_email")
     private String emplEmail;
     @Size(max = 2147483647)
-    @Column(name = "empl_rank_pos")
-    private String emplRankPos;
-    @Size(max = 2147483647)
     @Column(name = "acctno")
     private String acctno;
     @Size(max = 2147483647)
@@ -101,8 +96,9 @@ public class CoopEmplDtl implements Serializable {
     @Column(name = "employment_end_date")
     @Temporal(TemporalType.DATE)
     private Date employmentEndDate;
-    @OneToMany(mappedBy = "emplDtlNum")
-    private Collection<CoopEmplDtlMem> coopEmplDtlMemCollection;
+    @JoinColumn(name = "empl_rank_pos", referencedColumnName = "occupation_code")
+    @ManyToOne
+    private CoopOccupation emplRankPos;
 
     public CoopEmplDtl() {
     }
@@ -207,14 +203,6 @@ public class CoopEmplDtl implements Serializable {
         this.emplEmail = emplEmail;
     }
 
-    public String getEmplRankPos() {
-        return emplRankPos;
-    }
-
-    public void setEmplRankPos(String emplRankPos) {
-        this.emplRankPos = emplRankPos;
-    }
-
     public String getAcctno() {
         return acctno;
     }
@@ -239,13 +227,12 @@ public class CoopEmplDtl implements Serializable {
         this.employmentEndDate = employmentEndDate;
     }
 
-    @XmlTransient
-    public Collection<CoopEmplDtlMem> getCoopEmplDtlMemCollection() {
-        return coopEmplDtlMemCollection;
+    public CoopOccupation getEmplRankPos() {
+        return emplRankPos;
     }
 
-    public void setCoopEmplDtlMemCollection(Collection<CoopEmplDtlMem> coopEmplDtlMemCollection) {
-        this.coopEmplDtlMemCollection = coopEmplDtlMemCollection;
+    public void setEmplRankPos(CoopOccupation emplRankPos) {
+        this.emplRankPos = emplRankPos;
     }
 
     @Override

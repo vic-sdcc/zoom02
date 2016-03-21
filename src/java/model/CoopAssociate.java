@@ -6,6 +6,7 @@
 package model;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -17,11 +18,13 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -79,6 +82,8 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "CoopAssociate.findByPagIbig", query = "SELECT c FROM CoopAssociate c WHERE c.pagIbig = :pagIbig"),
     @NamedQuery(name = "CoopAssociate.findByGender", query = "SELECT c FROM CoopAssociate c WHERE c.gender = :gender")})
 public class CoopAssociate implements Serializable {
+    @OneToMany(mappedBy = "associateNo")
+    private Collection<CoopEmplDtlAssoc> coopEmplDtlAssocCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -648,6 +653,15 @@ public class CoopAssociate implements Serializable {
     @Override
     public String toString() {
         return "model.CoopAssociate[ associateNo=" + associateNo + " ]";
+    }
+
+    @XmlTransient
+    public Collection<CoopEmplDtlAssoc> getCoopEmplDtlAssocCollection() {
+        return coopEmplDtlAssocCollection;
+    }
+
+    public void setCoopEmplDtlAssocCollection(Collection<CoopEmplDtlAssoc> coopEmplDtlAssocCollection) {
+        this.coopEmplDtlAssocCollection = coopEmplDtlAssocCollection;
     }
     
 }
