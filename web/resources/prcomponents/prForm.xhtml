@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <composite:interface>
+        <composite:attribute name="member"/>
+    </composite:interface>
+    <composite:implementation>
+        <h:panelGroup id="prPanel" >
+            <h:form id="prForm">
+                <p:panel id="memberPanel" style="border: white; font-size: small;">
+                    <br/>
+                    <center>
+                        <p:outputLabel style="font-size: small;" value="San Dionisio Credit Cooperative"/><br/>
+                        <p:outputLabel style="font-size: small;" value="0554 Quirino Avenue, San Dionisio, Paranaque City"/><br/>
+                        <p:outputLabel style="font-size: small;" value="www.sandionisiocredit.coop"/><br/>
+                    </center>
+                    <br/>
+                    <br/>
+                    <p:dataTable id="memberList"
+                                 value="#{cc.attrs.member}" 
+                                 var="member">
+                        <p:column style="width: 30%">
+                            <f:facet name="header">
+                                <h:outputText value="Member No." />
+                            </f:facet>
+                            <h:outputText value="#{member.memNo}" 
+                                          style="display:inline-block"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <h:outputText value="Full Name" />
+                            </f:facet>
+                            <h:outputText value="#{member.PPrefix} #{member.firstName} #{member.middleName} #{member.lastName} #{member.suffix}" 
+                                          style="display:inline-block"/>
+                        </p:column>
+                        <p:column style="width: 20%">
+                            <f:facet name="header">
+                                <h:outputText value="Org. Unit" />
+                            </f:facet>
+                            <h:outputText value="#{member.ouCode.ouShortName}" 
+                                          style="display:inline-block"/>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
+            </h:form>
+        </h:panelGroup>
+    </composite:implementation>
+</html>
