@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:prcc="http://java.sun.com/jsf/composite/prcomponents"
+      xmlns:f="http://java.sun.com/jsf/core">
+    <ui:composition template="/templates/layout.xhtml">
+        <ui:define id="mainContent" name="content">
+            <h:form id="mainForm">
+                <p:ajaxStatus onstart="PF('statusDialog').show()" onsuccess="PF('statusDialog').hide()"/>
+                <p:dialog widgetVar="statusDialog" showHeader="false" resizable="false">
+                    <p:graphicImage value="/resources/images/ajax_load.gif"/>
+                </p:dialog>
+                <p:outputLabel value="Print #{returnObject.memberType} Record List" style="font-weight: bold"/>
+                <br/>
+                <div style="overflow: auto; height: 570px">
+                    <prcc:prForm id="prForm" member="#{returnObject.memberType eq 'Regular' ? memberListModel.memberList : associateListModel.associateList}"/>
+                </div>
+                <br/>
+                <p:commandButton value="CANCEL"
+                                 id="cancelBtn"
+                                 icon="ui-icon-cancel"
+                                 styleClass="ui-btn ui-btn-icon-left ui-icon-forbidden"
+                                 style="margin-right: 7px;">
+                    <p:ajax listener="#{redirectBean.mainPage()}"/>
+                </p:commandButton>
+                <p:commandButton value="PRINT"
+                                 icon="ui-icon-print"
+                                 styleClass="ui-btn ui-btn-icon-left ui-icon-arrow-1-w"
+                                 style="margin-right: 7px;">
+                    <p:printer target="prForm:prPanel"/>
+                </p:commandButton>
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>
